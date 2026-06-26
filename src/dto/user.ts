@@ -1,6 +1,6 @@
 import z from 'zod';
 
-import { UserSchema } from '../entities';
+import { MomentSchema, UserSchema } from '../entities';
 import { SpeakerSchema } from '../entities/speaker';
 
 export const GetUserResponseSchema = z.object({
@@ -16,5 +16,11 @@ export const SearchSpeakersResponseSchema = z.object({
   users: z.array(SpeakerSchema),
 });
 
+export const GetUserMomentsResponseSchema = z.object({
+  isLast: z.number(),
+  momentList: z.array(MomentSchema),
+});
+
 export type GetUserResponse = z.infer<typeof GetUserResponseSchema>;
 export type SearchSpeakersResponse = z.infer<typeof SearchSpeakersResponseSchema>;
+export type GetUserMomentsResponse = z.infer<typeof GetUserMomentsResponseSchema>;

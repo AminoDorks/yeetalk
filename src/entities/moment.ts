@@ -23,7 +23,7 @@ export const MomentSchema = z.object({
   text: z.string(),
   totalComment: z.number(),
   updateTime: z.number(),
-  user: UserSchema,
+  user: ShortUserSchema,
 });
 
 export type Moment = z.infer<typeof MomentSchema>;

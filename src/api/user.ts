@@ -1,5 +1,7 @@
 import type { Http } from '../client/http';
 import {
+  type GetUserMomentsResponse,
+  GetUserMomentsResponseSchema,
   type GetUserResponse,
   GetUserResponseSchema,
   type SearchSpeakersResponse,
@@ -71,4 +73,18 @@ export class UserAPI {
   public follow = async (identity: string): Promise<void> => await this.following(identity, 1);
 
   public unfollow = async (identity: string): Promise<void> => await this.following(identity, -1);
+
+  public moments = async (
+    identity: string,
+    page: number = 1,
+    batch: number = 20
+  ): Promise<GetUserMomentsResponse> =>
+    await this.http.service<GetUserMomentsResponse>(
+      {
+        data: JSON.stringify({ identity, paging_request: { page_index: page, page_size: batch } }),
+        interface: 'v3.momentService.MixedMomentFlow',
+        service: 'UnifyEntry',
+      },
+      GetUserMomentsResponseSchema
+    );
 }
