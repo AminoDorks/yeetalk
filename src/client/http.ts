@@ -101,7 +101,6 @@ export class Http {
     return await this.handle(response.url, await response.text(), string());
   };
 
-  // doesn't work, TODO: will fix this later
   public multipart = async <T>(builder: MultipartBuilder, schema: ZodType<T>): Promise<T> => {
     const form = new FormData();
 
@@ -117,12 +116,12 @@ export class Http {
       `CROP_${Date.now()}.jpg`
     );
 
+    const { 'Content-Type': contentType, ...headers } = this.configureHeaders();
+
     const response = await fetch(`${API_URL}/gateway/v3/file/upload`, {
       method: 'POST',
       body: form,
-      headers: {
-        ...this.configureHeaders(),
-      },
+      headers,
       proxy: this._proxy,
     });
 

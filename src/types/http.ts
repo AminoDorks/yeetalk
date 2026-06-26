@@ -1,4 +1,5 @@
 import type { InterfaceAPI, ServiceAPI } from './api';
+import type { FileType } from './usable';
 
 export interface ServiceBuilder {
   data: string;
@@ -8,6 +9,7 @@ export interface ServiceBuilder {
 
 export interface MultipartBuilder {
   fileSecret: string;
+  type: FileType;
   arrayBuffer: ArrayBuffer;
 }
 

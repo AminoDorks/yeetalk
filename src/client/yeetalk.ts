@@ -16,6 +16,7 @@ import type { Country, Hobby, User } from '../entities';
 import type { YeetalkConfig } from '../types/common';
 import { configureLogger } from '../util/logger';
 import { Http } from './http';
+import { FileType } from '../types/usable';
 
 export class Yeetalk {
   private http: Http;
@@ -68,7 +69,10 @@ export class Yeetalk {
     return this.momentApi;
   }
 
-  public upload = async (path: string): Promise<UploadResponse> => {
+  public upload = async (
+    path: string,
+    type: FileType = FileType.Image
+  ): Promise<UploadResponse> => {
     const arrayBuffer = await file(path).arrayBuffer();
 
     const fileSecret = await this.http.secret(
@@ -76,7 +80,7 @@ export class Yeetalk {
     );
 
     return await this.http.multipart<UploadResponse>(
-      { fileSecret, arrayBuffer },
+      { fileSecret, arrayBuffer, type },
       UploadResponseSchema
     );
   };
