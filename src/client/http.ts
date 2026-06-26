@@ -1,11 +1,12 @@
-import { ZodType } from 'zod';
+import { ZodAny, ZodType, any, string } from 'zod';
 import type { Logger } from 'pino';
 import { fetch } from 'netbun';
 import camelcaseKeys from 'camelcase-keys';
+import { Image } from 'bun';
 
 import { isOk } from '../util/util';
 import { API_URL, BASE_HEADERS } from '../constants';
-import type { Headers, ServiceBuilder } from '../types/http';
+import type { Headers, MultipartBuilder, ServiceBuilder } from '../types/http';
 import { YeetalkError } from '../util/errors';
 import { CommonResponseSchema } from '../dto/common';
 import {
@@ -48,7 +49,7 @@ export class Http {
   }
 
   private configureHeaders = (): Headers => {
-    const headers = {
+    const headers: Headers = {
       timestamp: Math.floor(Date.now() / 1000).toString(),
       ...this._headers,
       request_id: generateRequestId(),
@@ -75,11 +76,53 @@ export class Http {
     return schema.parse(decrypted.data);
   };
 
-  public service = async <T>(builder: ServiceBuilder, schema: ZodType<T>): Promise<T> => {
+  public service = async <T = ZodAny>(
+    builder: ServiceBuilder,
+    schema: ZodType<T> = any()
+  ): Promise<T> => {
     const response = await fetch(`${API_URL}/gateway/v4/service`, {
       method: 'POST',
       body: encrypt(JSON.stringify(builder)),
       headers: this.configureHeaders(),
+      proxy: this._proxy,
+    });
+
+    return await this.handle(response.url, await response.text(), schema);
+  };
+
+  public secret = async <T>(fileMD5: string): Promise<string> => {
+    const response = await fetch(`${API_URL}/gateway/v3/file/secret`, {
+      method: 'POST',
+      body: encrypt(JSON.stringify({ data: JSON.stringify({ file_md5: fileMD5 }) })),
+      headers: this.configureHeaders(),
+      proxy: this._proxy,
+    });
+
+    return await this.handle(response.url, await response.text(), string());
+  };
+
+  // doesn't work, TODO: will fix this later
+  public multipart = async <T>(builder: MultipartBuilder, schema: ZodType<T>): Promise<T> => {
+    const form = new FormData();
+
+    const { width, height } = await new Image(builder.arrayBuffer).metadata();
+
+    form.append('secret', builder.fileSecret);
+    form.append('width', width.toString());
+    form.append('height', height.toString());
+    form.append('file_type', '3');
+    form.append(
+      'file',
+      new Blob([builder.arrayBuffer], { type: 'image/jpeg' }),
+      `CROP_${Date.now()}.jpg`
+    );
+
+    const response = await fetch(`${API_URL}/gateway/v3/file/upload`, {
+      method: 'POST',
+      body: form,
+      headers: {
+        ...this.configureHeaders(),
+      },
       proxy: this._proxy,
     });
 

@@ -6,4 +6,9 @@ export interface ServiceBuilder {
   service: ServiceAPI;
 }
 
+export interface MultipartBuilder {
+  fileSecret: string;
+  arrayBuffer: ArrayBuffer;
+}
+
 export type Headers = Record<string, string>;
