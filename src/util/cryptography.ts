@@ -1,5 +1,5 @@
-import { createCipheriv, createDecipheriv, createHash, randomUUID } from 'crypto';
-import { gunzipSync, inflateSync } from 'bun';
+import { createCipheriv, createDecipheriv, randomUUID } from 'crypto';
+import { gunzipSync, inflateSync, CryptoHasher } from 'bun';
 
 import { AES_KEY, AES_IV, SIGN_FIELDS } from '../constants';
 import type { DecodedUserSig } from '../types/cryptography';
@@ -35,10 +35,9 @@ export const generateSign = (headers: Headers) => {
     .map((key) => `${key}=${encodeURIComponent(headers[key]!)}`)
     .join('&');
 
-  return createHash('md5')
+  return new CryptoHasher('md5')
     .update(`${paramsForSign}${headers['timestamp']!.split('').reverse().join('')}`)
     .digest('hex');
 };
 
-// for fun
 export const generateDeviceId = (): string => `${randomUUID().replace(/-/g, '').slice(0, 33)}e`;

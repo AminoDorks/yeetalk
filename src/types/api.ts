@@ -28,7 +28,9 @@ export type InterfaceAPI =
   | 'v2.momentService.MomentFlow'
   | 'v1.momentService.PublishComment'
   | 'v1.UserService.Follow'
-  | 'v1.ConfigService.AppConfig';
+  | 'v1.ConfigService.AppConfig'
+  | 'Room.tag'
+  | 'v2.momentService.GetCommentList';
 
 export type ServiceAPI =
   | 'UnifyEntry'
