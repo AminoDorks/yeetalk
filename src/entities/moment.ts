@@ -1,6 +1,5 @@
 import z from 'zod';
 
-import { UserSchema } from './user';
 import { ShortUserSchema } from './short-user';
 
 export const MediaSchema = z.object({
