@@ -34,6 +34,10 @@ export class Yeetalk {
     this.http.proxy = value;
   }
 
+  get proxy(): string | undefined {
+    return this.http.proxy;
+  }
+
   get account(): User {
     if (!this.authApi) {
       throw new Error('Unauthorized');
