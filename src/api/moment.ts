@@ -38,7 +38,6 @@ export class MomentAPI {
     return comments?.flatMap((wrapped) => wrapped.rootComment) ?? [];
   };
 
-  // TODO: solve the Network service busy error
   public comment = async (momentId: number, text: string): Promise<void> => {
     await this.http.service({
       data: JSON.stringify({
@@ -48,6 +47,10 @@ export class MomentAPI {
           moment_id: momentId,
           reply_comment_id: 0,
           root_comment_id: 0,
+          reply_to_user: {
+            identity: this.account.identity,
+            im_account: this.account.identity,
+          },
           type: 4,
           text,
           user: {
