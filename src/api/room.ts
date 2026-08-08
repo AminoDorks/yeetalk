@@ -1,4 +1,3 @@
-import type { Http } from '../client/http';
 import {
   type GetAudienceResponse,
   GetAudienceResponseSchema,
@@ -11,6 +10,7 @@ import {
   type JoinRoomResponse,
   JoinRoomResponseSchema,
 } from '../dto/room';
+import type { Http } from '../client/http';
 import type { Member } from '../entities/member';
 import type { Message } from '../entities/message';
 import type { Room } from '../entities/room';

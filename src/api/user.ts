@@ -1,4 +1,3 @@
-import type { Http } from '../client/http';
 import {
   type GetUserMomentsResponse,
   GetUserMomentsResponseSchema,
@@ -7,6 +6,7 @@ import {
   type SearchSpeakersResponse,
   SearchSpeakersResponseSchema,
 } from '../dto/user';
+import type { Http } from '../client/http';
 import type { UpdateBuilder } from '../types/usable';
 
 export class UserAPI {

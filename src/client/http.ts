@@ -1,12 +1,11 @@
 import { ZodAny, ZodType, any, string } from 'zod';
-import type { Logger } from 'pino';
 import { fetch } from 'netbun';
 import camelcaseKeys from 'camelcase-keys';
 import { Image } from 'bun';
+import type { Logger } from 'pino';
 
 import { isOk } from '../util/util';
 import { API_URL, BASE_HEADERS } from '../constants';
-import type { Headers, MultipartBuilder, ServiceBuilder } from '../types/http';
 import { YeetalkError } from '../util/errors';
 import { CommonResponseSchema } from '../dto/common';
 import {
@@ -16,6 +15,7 @@ import {
   generateRequestId,
   generateSign,
 } from '../util/cryptography';
+import type { Headers, MultipartBuilder, ServiceBuilder } from '../types/http';
 
 export class Http {
   private _headers: Headers = { ...BASE_HEADERS };
@@ -74,6 +74,18 @@ export class Http {
     this.logger.info({ path: path }, 'OK');
 
     return schema.parse(decrypted.data);
+  };
+
+  public healthcheck = async (): Promise<boolean> => {
+    try {
+      await fetch(`${API_URL}/gateway/v4/service`, {
+        method: 'POST',
+        proxy: this._proxy,
+      });
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   public service = async <T = ZodAny>(

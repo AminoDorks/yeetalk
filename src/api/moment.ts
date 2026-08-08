@@ -1,9 +1,9 @@
-import type { Http } from '../client/http';
 import {
   GetCommentsResponseSchema,
   type GetCommentsResponse,
   type GetMomentsResponse,
 } from '../dto/moment';
+import type { Http } from '../client/http';
 import type { User } from '../entities';
 import type { Comment } from '../entities/comment';
 

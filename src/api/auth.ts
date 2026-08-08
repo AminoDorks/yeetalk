@@ -1,10 +1,10 @@
-import type { Http } from '../client/http';
 import {
   type GetMeResponse,
   GetMeResponseSchema,
   type RegisterResponse,
   RegisterResponseSchema,
 } from '../dto/auth';
+import type { Http } from '../client/http';
 import type { User } from '../entities';
 
 export class AuthAPI {
@@ -32,13 +32,13 @@ export class AuthAPI {
       GetMeResponseSchema
     );
 
-  public login = async (accessToken: string, identity: string): Promise<void> => {
+  public login = async (accessToken: string, identity: string): Promise<User> => {
     this.http.headers = {
       access_token: accessToken,
       identity: identity,
     };
 
-    this._account = (await this.me()).userInfo.user;
+    return (this._account = (await this.me()).userInfo.user);
   };
 
   public sendCode = async (email: string): Promise<void> => {
